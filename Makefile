@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/05 15:19:20 by trpham            #+#    #+#              #
-#    Updated: 2025/03/06 16:13:06 by trpham           ###   ########.fr        #
+#    Updated: 2025/03/06 16:18:03 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,8 +17,6 @@ SERVER_SRCS = server.c
 CLIENT_SRCS = client.c
 SERVER_OBJS = $(SERVER_SRCS:%.c=%.o)
 CLIENT_OBJS = $(CLIENT_SRCS:%.c=%.o)
-
-# SRCS = $(SERVER_SRCS) $(CLIENT_SRCS)
 
 SERVER_NAME = server
 CLIENT_NAME = client
