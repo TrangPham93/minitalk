@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/06 14:52:50 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/06 17:26:33 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,15 @@ int	main(int ac, char *av[])
 {
 	char	*msg;
 	int		i;
+	int		len;
 
 	if (ac != 3)
 	{
 		ft_putstr_fd("Please provide PID and message\n", 1);
 		exit(EXIT_FAILURE);
 	}
-	// printf("%zu\n", ft_strlen(av[1]));
-	if (ft_strlen(av[1]) != 6)
+	len = ft_strlen(av[1]);
+	if (len != 6)
 	{
 		ft_putstr_fd("Not a valid PID\n", 1);
 		exit(EXIT_FAILURE);
@@ -42,7 +43,7 @@ int	main(int ac, char *av[])
 	}
 	msg = av[2];
 	i = 0;
-	while (msg[i])
+	while (i <= len)
 	{
 		send_signal(ft_atoi(av[1]), msg[i]);
 		i++;
@@ -72,5 +73,4 @@ void	send_signal(int	pid, unsigned char c)
 		usleep(42);
 	}
 	write(1, "\n", 1);
-	
 }
