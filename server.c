@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/06 17:42:05 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/06 21:18:02 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ static void	signal_handler(int signal)
 		{
 			ft_putstr_fd("\n", 1);
 			ft_putstr_fd("Transmission completed\n", 1);
-			exit(EXIT_SUCCESS);
+			// exit(EXIT_SUCCESS);
 		}
 		ft_putchar_fd(temp_c, 1);
 		temp_c = 0;
