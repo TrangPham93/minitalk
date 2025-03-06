@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/06 21:17:33 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/06 21:20:30 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ void	send_signal(int	pid, unsigned char c)
 			kill(pid, SIGUSR1);
 		}
 		i--;
-		usleep(42);
+		usleep(300);
 	}
 	write(1, "\n", 1);
 }
