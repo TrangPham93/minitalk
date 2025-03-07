@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/06 21:18:02 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/07 16:33:57 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include <signal.h>
 
 static void	signal_handler(int signal);
-static void	set_signal_action(void);
+// static void	set_signal_action(void);
 
 int	main()
 {
@@ -26,7 +26,8 @@ int	main()
 	set_signal_action();
 	while (1)
 	{
-		pause();
+		if (!ready_to_receive)
+			pause();
 		// signal(SIGTERM, signal_handler);
 		// sigaction(SIGINT, &act, NULL);
 	}

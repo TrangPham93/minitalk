@@ -6,13 +6,14 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/06 21:58:02 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/07 16:33:48 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
 static void	send_signal(int	pid, unsigned char c);
+bool		ready_to_receive = false;
 
 int	main(int ac, char *av[])
 {
@@ -43,6 +44,8 @@ int	main(int ac, char *av[])
 	i = 0;
 	while (msg[i])
 	{
+		if (!ready_to_receive)
+			pause()
 		send_signal(ft_atoi(av[1]), msg[i]);
 		i++;
 	}
