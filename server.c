@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/07 16:33:57 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/07 19:24:11 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include <signal.h>
 
 static void	signal_handler(int signal);
+static void	set_signal_action(void);
+extern int ready_to_receive;
 // static void	set_signal_action(void);
 
 int	main()
@@ -26,7 +28,9 @@ int	main()
 	set_signal_action();
 	while (1)
 	{
-		if (!ready_to_receive)
+		// if (set_signal_action())
+		// 	ready_to_receive = true;
+		// if (!ready_to_receive)
 			pause();
 		// signal(SIGTERM, signal_handler);
 		// sigaction(SIGINT, &act, NULL);
@@ -42,7 +46,7 @@ static void	set_signal_action(void)
 	act.sa_handler = &signal_handler;
 	sigaction(SIGUSR1, &act, NULL);
 	sigaction(SIGUSR2, &act, NULL);
-	sigaction(SIGTERM, &act, NULL);
+	// sigaction(SIGTERM, &act, NULL);
 }
 
 static void	signal_handler(int signal)
@@ -66,14 +70,15 @@ static void	signal_handler(int signal)
 	i++;
 	if (i == 8)
 	{
-		if (temp_c == '\0')
-		{
-			ft_putstr_fd("\n", 1);
-			ft_putstr_fd("Transmission completed\n", 1);
-			// exit(EXIT_SUCCESS);
-		}
+		// if (temp_c == '\0')
+		// {
+		// 	ft_putstr_fd("\n", 1);
+		// 	ft_putstr_fd("Transmission completed\n", 1);
+		// 	// exit(EXIT_SUCCESS);
+		// }
 		ft_putchar_fd(temp_c, 1);
 		temp_c = 0;
 		i = 0;
 	}
+	ready_to_receive = TRUE;
 }
