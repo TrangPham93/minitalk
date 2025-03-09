@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/07 19:24:11 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/09 14:08:32 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,18 @@ static void	set_signal_action(void)
 	struct sigaction act;
 	
 	ft_bzero(&act, sizeof(act));
-	act.sa_handler = &signal_handler;
+	act.sa_sigaction = &signal_handler;
+	act.sa_flags = SA_SIGINFO;
 	sigaction(SIGUSR1, &act, NULL);
 	sigaction(SIGUSR2, &act, NULL);
-	// sigaction(SIGTERM, &act, NULL);
 }
 
-static void	signal_handler(int signal)
+static void	signal_handler(int signal, siginfo_t *info, void *context)
 {
 	static unsigned char	temp_c;
 	static int				i;
 
+	(void)context;
 	temp_c = temp_c << 1;
 	if (signal == SIGTERM)
 	{
@@ -80,5 +81,9 @@ static void	signal_handler(int signal)
 		temp_c = 0;
 		i = 0;
 	}
+	if (signal == SIGUSR1)
+		kill(info.si_pid, SIGUSR1);
+	else if (signal == SIGUSR2)
+		kill(info.si_pid, SIGUSR2);
 	ready_to_receive = TRUE;
 }
