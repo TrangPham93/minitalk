@@ -6,16 +6,16 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/09 14:08:32 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/10 13:38:29 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 #include <signal.h>
 
-static void	signal_handler(int signal);
+static void	signal_handler(int signal, siginfo_t *info, void *context);
 static void	set_signal_action(void);
-extern int ready_to_receive;
+int ready_to_receive = 0;
 // static void	set_signal_action(void);
 
 int	main()
@@ -28,12 +28,9 @@ int	main()
 	set_signal_action();
 	while (1)
 	{
-		// if (set_signal_action())
-		// 	ready_to_receive = true;
-		// if (!ready_to_receive)
+		if (!ready_to_receive)
 			pause();
-		// signal(SIGTERM, signal_handler);
-		// sigaction(SIGINT, &act, NULL);
+		ready_to_receive = 0;
 	}
 	return (0);
 }
@@ -42,32 +39,44 @@ static void	set_signal_action(void)
 {
 	struct sigaction act;
 	
+	// sigemptyset(&act);
 	ft_bzero(&act, sizeof(act));
 	act.sa_sigaction = &signal_handler;
 	act.sa_flags = SA_SIGINFO;
-	sigaction(SIGUSR1, &act, NULL);
+	sigaction(SIGUSR1, &act, NULL); //sigaction return 0 on success and -1 on error
 	sigaction(SIGUSR2, &act, NULL);
+	// sigaction(SIGTERM, &act, NULL);
 }
 
 static void	signal_handler(int signal, siginfo_t *info, void *context)
 {
 	static unsigned char	temp_c;
 	static int				i;
-
+	//Static variables (like global variables) are initialized as 0 if not initialized explicitly. 
+	
 	(void)context;
+	(void)info;
 	temp_c = temp_c << 1;
 	if (signal == SIGTERM)
 	{
 		ft_putstr_fd("Transmission completed\n", 1);
 		exit(EXIT_SUCCESS);
 	}
+	
 	if (signal == SIGUSR1)
 	{
-		// ft_putstr_fd("Receive bit 1 \n", 1);
+		ft_putstr_fd("Receive bit 1 \n", 1);
 		temp_c = temp_c | 1;
+		// printf("%d\n", info->si_pid);
+		kill(info->si_pid, SIGUSR1);
 	}
-	// else
-	// 	ft_putstr_fd("Receive bit 0 \n", 1);
+	else if (signal == SIGUSR2)
+	{
+		ft_putstr_fd("Receive bit 0 \n", 1);
+		kill(info->si_pid, SIGUSR2);
+		// printf("%d\n", info->si_pid);
+	}
+	
 	i++;
 	if (i == 8)
 	{
@@ -81,9 +90,11 @@ static void	signal_handler(int signal, siginfo_t *info, void *context)
 		temp_c = 0;
 		i = 0;
 	}
-	if (signal == SIGUSR1)
-		kill(info.si_pid, SIGUSR1);
-	else if (signal == SIGUSR2)
-		kill(info.si_pid, SIGUSR2);
-	ready_to_receive = TRUE;
+	ready_to_receive = 1;
+	// send signal to client to acknowlege signal receipt for each bit
+	// if (signal == SIGUSR1)
+	// 	kill(info->si_pid, SIGUSR1);
+	// else if (signal == SIGUSR2)
+	// 	kill(info->si_pid, SIGUSR2);
+	// ready_to_receive = TRUE;
 }
