@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/10 13:37:41 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/10 14:14:52 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 static void	send_signal(int	pid, unsigned char c);
 static void action(int signal);
-
-// int		ready_to_receive = FALSE;
 
 int	main(int ac, char *av[])
 {
@@ -43,15 +41,16 @@ int	main(int ac, char *av[])
 		}
 		i++;
 	}
-	signal(SIGUSR1, action);
-	signal(SIGUSR2, action);
-
 	PID = ft_atoi(av[1]);
 	if (kill(PID, 0) == -1)
 	{
 		ft_putstr_fd("Invalid PID\n", 1);
 		exit(EXIT_FAILURE);
 	}
+	
+	signal(SIGUSR1, action);
+	signal(SIGUSR2, action);
+
 	msg = av[2];
 	i = 0;
 	while (msg[i])
@@ -63,14 +62,6 @@ int	main(int ac, char *av[])
 	
 	return (0);
 }
-/* 
-Potential problem with signal transmission
-1. timing issue / signal loss: 
-	usleep: suspends execution for at least x microsecond --> return 0 on success
-2. server's signal handling logic: 
-3. validation: send to client after each byte is received. how?
-4. check if pid is correct by sending a check to pid: kill return 0 if success else -1
- */
 
 static void	send_signal(int	pid, unsigned char c)
 {
@@ -92,18 +83,35 @@ static void	send_signal(int	pid, unsigned char c)
 		i--;
 		usleep(100); 
 	}
-	write(1, "\n", 1);
+	while (1)
+	{
+		pause();
+	}
+	
+	// write(1, "\n", 1);
 }
 
 static void action(int signal)
 {
-	static int	received;
+	// static int	received;
 
 	if (signal == SIGUSR1)
-		received++;
+		printf("receive %d/n", SIGUSR1);
 	else
 	{
-		ft_putnbr_fd(received, 1);
-		exit(0);
+		printf("receive %d/n", SIGUSR2);
+
+		// ft_putnbr_fd(received, 1);
+		// exit(0);
 	}
+	kill(getpid(), SIGUSR1);
 }
+
+/* 
+Potential problem with signal transmission
+1. timing issue / signal loss: 
+	usleep: suspends execution for at least x microsecond --> return 0 on success
+2. server's signal handling logic: 
+3. validation: send to client after each byte is received. how?
+4. check if pid is correct by sending a check to pid: kill return 0 if success else -1
+ */
