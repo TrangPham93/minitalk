@@ -6,11 +6,13 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/10 14:14:52 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/10 14:56:46 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
+
+static int validate_PID(char *arg);
 
 static void	send_signal(int	pid, unsigned char c);
 static void action(int signal);
@@ -26,27 +28,9 @@ int	main(int ac, char *av[])
 		ft_putstr_fd("Please provide PID and message\n", 1);
 		exit(EXIT_FAILURE);
 	}
-	if (ft_strlen(av[1]) != 6)
-	{
-		ft_putstr_fd("Not a valid PID\n", 1);
+	PID = validate_PID(av[1]);
+	if (PID == -1)
 		exit(EXIT_FAILURE);
-	}
-	i = 0;
-	while (av[1][i])
-	{
-		if (ft_isdigit(av[1][i]) == -1)
-		{
-			ft_putstr_fd("Not a valid PID\n", 1);
-			exit(EXIT_FAILURE);
-		}
-		i++;
-	}
-	PID = ft_atoi(av[1]);
-	if (kill(PID, 0) == -1)
-	{
-		ft_putstr_fd("Invalid PID\n", 1);
-		exit(EXIT_FAILURE);
-	}
 	
 	signal(SIGUSR1, action);
 	signal(SIGUSR2, action);
@@ -57,7 +41,6 @@ int	main(int ac, char *av[])
 	{
 		send_signal(PID, msg[i]);	
 		i++;
-
 	}
 	
 	return (0);
@@ -96,15 +79,46 @@ static void action(int signal)
 	// static int	received;
 
 	if (signal == SIGUSR1)
-		printf("receive %d/n", SIGUSR1);
+		// printf("receive %d/n", SIGUSR1);
+		kill(getpid(), SIGUSR1);
+
 	else
 	{
-		printf("receive %d/n", SIGUSR2);
+		// printf("receive %d/n", SIGUSR2);
+		kill(getpid(), SIGUSR2);
 
 		// ft_putnbr_fd(received, 1);
 		// exit(0);
 	}
-	kill(getpid(), SIGUSR1);
+}
+
+static int validate_PID(char *arg)
+{
+	int	PID;
+	int	i;
+
+	if (ft_strlen(arg) != 6)
+	{
+		ft_putstr_fd("Not a valid PID\n", 1);
+		return (-1);
+	}
+	i = 0;
+	while (arg[i])
+	{
+		if (ft_isdigit(arg[i]) == -1)
+		{
+			ft_putstr_fd("Not a valid PID\n", 1);
+			return (-1);
+		}
+		i++;
+	}
+	PID = ft_atoi(arg);
+	if (kill(PID, 0) == -1)
+	{
+		ft_putstr_fd("Invalid PID or process not exist\n", 1);
+		return (-1);
+	}
+	return (PID);
 }
 
 /* 

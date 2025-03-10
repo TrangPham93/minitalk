@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/10 14:39:34 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/10 14:44:10 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ static void	signal_handler(int signal, siginfo_t *info, void *context)
 	//Static variables (like global variables) are initialized as 0 if not initialized explicitly. 
 	
 	(void)context;
-	(void)info;
+	// (void)info;
 	temp_c = temp_c << 1;
 	if (signal == SIGTERM)
 	{
