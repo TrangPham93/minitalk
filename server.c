@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/11 16:25:50 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/11 22:43:44 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 static void	signal_handler(int signal, siginfo_t *info, void *context);
 static void	set_signal_action(void);
+static char sent_msg[2097152]; //getconf ARG_MAX
 
 int	main()
 {
@@ -35,10 +36,9 @@ static void	set_signal_action(void)
 {
 	struct sigaction act;
 	
-	// ft_bzero(&act, sizeof(act));
-	sigemptyset(&act.sa_mask);
 	act.sa_flags = SA_SIGINFO;
 	act.sa_sigaction = &signal_handler;
+	sigemptyset(&act.sa_mask);
 	if (sigaction(SIGUSR1, &act, NULL) == -1
 		|| sigaction(SIGUSR2, &act, NULL) == -1)
 	{
@@ -52,6 +52,7 @@ static void	signal_handler(int signal, siginfo_t *info, void *context)
 {
 	static unsigned char	temp_c;
 	static int				i;
+	static int				j;
 	static pid_t			client_id;
 	
 	(void)context;
@@ -61,9 +62,21 @@ static void	signal_handler(int signal, siginfo_t *info, void *context)
 	// 	ft_putstr_fd("Transmission completed\n", 1);
 	// 	exit(EXIT_SUCCESS);
 	// }
-	if (info->si_pid)
-		client_id = info->si_pid;
+	if (info->si_pid && info->si_pid != client_id)
+	{
+		if (client_id == 0)
+			client_id = info->si_pid;
+		else
+		{
+			ft_putstr_fd("Detect new client\n", 1);
+			return ;
+		}
+	}
 	temp_c = temp_c << 1;
+	// if (signal == SIGUSR1 || signal == SIGUSR2)
+	// {
+	// 	client_id =
+	// }
 	if (signal == SIGUSR1)
 		temp_c = temp_c | 1;
 	i++;
@@ -72,12 +85,20 @@ static void	signal_handler(int signal, siginfo_t *info, void *context)
 		if (temp_c == '\0')
 		{
 			send_signal(client_id, SIGUSR2); // termination signal
-			ft_putstr_fd("Transmission completed\n", 1);
+			ft_printf("%s\n", sent_msg);
+			ft_bzero(sent_msg, sizeof(sent_msg));
+			j = 0;
+			temp_c = 0;
+			i = 0;
+			return ;
 		}
 		else
-			ft_putchar_fd(temp_c, 1);
-		temp_c = 0;
-		i = 0;
+		{
+			sent_msg[j] = temp_c;
+			j++;
+			temp_c = 0;
+			i = 0;
+		}
 	}
 	send_signal(client_id, SIGUSR1); //acknowledge each received bit
 }
