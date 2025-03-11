@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/11 16:39:18 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/11 21:23:41 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,36 +50,19 @@ static void	send_message(int pid, char *message)
 		i = 7;
 		while (i >= 0)
 		{
-			while (!ready_to_receive)
-				pause();
-			ready_to_receive = 0;
 			
 			if ((c & (1 << i)) == 0) //1 = 00000001, bitmask isolating the ith bit in c
-				send_signal(pid, SIGUSR2);
+			send_signal(pid, SIGUSR2);
 			else
-				send_signal(pid, SIGUSR1);
+			send_signal(pid, SIGUSR1);
 			i--;
-			// usleep(100); 
-			// pause();
+			while (ready_to_receive == 0)
+				usleep(100);
+			ready_to_receive = 0;
 		}
 		message++;
 		
 	}
-	i = 7;
-	while (i >= 0)
-	{
-		while (!ready_to_receive)
-			pause();
-		ready_to_receive = 0;
-
-		send_signal(pid, SIGUSR2);
-		i--;
-	}
-
-	// Wait for final acknowledgment before exiting
-	while (!ready_to_receive)
-		pause();
-	// send_signal(pid, SIGUSR2); //sending termination signal 0
 }
 
 static int validate_and_return_PID(char *arg)
@@ -123,11 +106,11 @@ static void action(int signal)
 		// kill(getpid(), SIGUSR1);
 	else if (signal == SIGUSR2)
 	{
-		if (ready_to_receive)
-		{
-			printf("Server send termination \n");
-			exit(EXIT_SUCCESS);
-		}
+		printf("Server send termination \n");
+		exit(EXIT_SUCCESS);
+		// if (ready_to_receive)
+		// {
+		// }
 		
 	}
 }
