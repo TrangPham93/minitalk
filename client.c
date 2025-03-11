@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/11 15:27:33 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/11 16:39:18 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,11 @@
 static void	send_message(int pid, char *message);
 static int validate_and_return_PID(char *arg);
 static void action(int signal);
+int	ready_to_receive = 0;
 
 int	main(int ac, char *av[])
 {
 	char	*msg;
-	// int		i;
-	// int		i;
 	int		PID;
 
 	if (ac != 3)
@@ -32,22 +31,10 @@ int	main(int ac, char *av[])
 	if (PID == -1)
 		exit(EXIT_FAILURE);
 	msg = av[2];
-	
-	send_signal(PID, SIGUSR1); //signal start of communication
-	printf("Initiate communication successfully\n");
-	
 	signal(SIGUSR1, action);
 	signal(SIGUSR2, action);
 	
 	send_message(PID, msg);
-
-	// i = 0;
-	// while (msg[i])
-	// {
-	// 	send_signal(PID, msg[i]);	
-	// 	i++;
-	// }
-	// kill(PID, '\0');
 	return (0);
 }
 
@@ -59,28 +46,40 @@ static void	send_message(int pid, char *message)
 	while (*message)
 	{
 		c = *message;
-		printf("Sending character %c\n", c);
+		// printf("Sending character %c\n", c);
 		i = 7;
 		while (i >= 0)
 		{
-			if ((c & (1 << i)) == 0)
-			{
+			while (!ready_to_receive)
+				pause();
+			ready_to_receive = 0;
+			
+			if ((c & (1 << i)) == 0) //1 = 00000001, bitmask isolating the ith bit in c
 				send_signal(pid, SIGUSR2);
-				// printf("Send 0 \n");
-				// kill(pid, SIGUSR2); // 1 = 00000001, bitmask isolating the ith bit in c
-			} 
 			else
-			{
 				send_signal(pid, SIGUSR1);
-				// kill(pid, SIGUSR1);
-				// printf("Send 1\n");
-			}
 			i--;
-			usleep(100); 
+			// usleep(100); 
+			// pause();
 		}
 		message++;
+		
 	}
-	send_signal(pid, SIGUSR2); //sending termination signal 0
+	i = 7;
+	while (i >= 0)
+	{
+		while (!ready_to_receive)
+			pause();
+		ready_to_receive = 0;
+
+		send_signal(pid, SIGUSR2);
+		i--;
+	}
+
+	// Wait for final acknowledgment before exiting
+	while (!ready_to_receive)
+		pause();
+	// send_signal(pid, SIGUSR2); //sending termination signal 0
 }
 
 static int validate_and_return_PID(char *arg)
@@ -114,7 +113,7 @@ static int validate_and_return_PID(char *arg)
 
 static void action(int signal)
 {
-	static int	ready_to_receive;
+	// static int	ready_to_receive;
 
 	if (signal == SIGUSR1)
 	{
@@ -129,15 +128,7 @@ static void action(int signal)
 			printf("Server send termination \n");
 			exit(EXIT_SUCCESS);
 		}
-		else
-		{
-			printf("server ready to receive first communication \n");
-			// exit(EXIT_FAILURE);
-		}
-		// kill(getpid(), SIGUSR2);
-
-		// ft_putnbr_fd(received, 1);
-		// exit(0);
+		
 	}
 }
 
