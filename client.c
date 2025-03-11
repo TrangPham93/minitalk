@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/11 15:21:54 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/11 15:27:33 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ static void action(int signal);
 int	main(int ac, char *av[])
 {
 	char	*msg;
+	// int		i;
 	// int		i;
 	int		PID;
 
