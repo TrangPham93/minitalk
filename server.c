@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/11 15:00:57 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/11 15:23:08 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@ static void	signal_handler(int signal, siginfo_t *info, void *context)
 	(void)context;
 	// (void)info;
 	// ready_to_receive = 1;
+	// temp_c = temp_c << 1;
 	// if (signal == SIGTERM)
 	// {
 	// 	ft_putstr_fd("Transmission completed\n", 1);
@@ -118,5 +119,4 @@ static void	signal_handler(int signal, siginfo_t *info, void *context)
 		i = 0;
 	}
 	send_signal(client_id, SIGUSR1); //acknowledge each received bit
-
 }
