@@ -6,15 +6,15 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/05 15:19:20 by trpham            #+#    #+#              #
-#    Updated: 2025/03/06 16:18:03 by trpham           ###   ########.fr        #
+#    Updated: 2025/03/11 14:06:27 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 CC = cc 
 CFLAGS = -Wall -Wextra -Werror -g
 
-SERVER_SRCS = server.c
-CLIENT_SRCS = client.c
+SERVER_SRCS = server.c utils.c
+CLIENT_SRCS = client.c utils.c
 SERVER_OBJS = $(SERVER_SRCS:%.c=%.o)
 CLIENT_OBJS = $(CLIENT_SRCS:%.c=%.o)
 
