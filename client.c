@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/12 12:12:22 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/12 12:14:11 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,6 @@ static int	validate_and_return_pid(char *arg);
 static void	send_char(int pid, unsigned char c);
 static void	action(int signal);
 int			g_ready_to_receive = 0;
-static int validate_and_return_PID(char *arg);
-static void send_char(int pid, unsigned char c);
-static void action(int signal);
-int	ready_to_receive = 0;
 
 int	main(int ac, char *av[])
 {
