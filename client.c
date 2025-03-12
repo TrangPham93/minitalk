@@ -6,109 +6,45 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/11 22:09:42 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/12 12:06:50 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-// static void	send_message(int pid, char *message);
-static void send_char(int pid, unsigned char c);
-
-static int validate_and_return_PID(char *arg);
-static void action(int signal);
-int	ready_to_receive = 0;
+static int	validate_and_return_pid(char *arg);
+static void	send_char(int pid, unsigned char c);
+static void	action(int signal);
+int			g_ready_to_receive = 0;
 
 int	main(int ac, char *av[])
 {
 	char	*msg;
-	int		PID;
-	// int		i;
+	int		pid;
 
 	if (ac != 3)
 	{
 		ft_putstr_fd("Please provide PID and message\n", 1);
 		exit(EXIT_FAILURE);
 	}
-	PID = validate_and_return_PID(av[1]);
-	if (PID == -1)
+	pid = validate_and_return_pid(av[1]);
+	if (pid == -1)
 		exit(EXIT_FAILURE);
 	msg = av[2];
 	signal(SIGUSR1, action);
 	signal(SIGUSR2, action);
-	// i = 0;
 	while (*msg)
 	{
-		send_char(PID, *msg);
+		send_char(pid, *msg);
 		msg++;
 	}
-	send_char(PID, '\0');	
-
-	// send_message(PID, msg);
+	send_char(pid, '\0');
 	return (0);
 }
 
-static void send_char(int pid, unsigned char c)
+static int	validate_and_return_pid(char *arg)
 {
-	int	i;
-	
-	i = 7;
-	while (i >= 0)
-	{
-		
-		if ((c & (1 << i)) == 0) //1 = 00000001, bitmask isolating the ith bit in c
-			send_signal(pid, SIGUSR2);
-		else
-			send_signal(pid, SIGUSR1);
-		i--;
-		while (ready_to_receive == 0)
-			usleep(100);
-		ready_to_receive = 0;
-	}
-}
-
-// static void	send_message(int pid, char *message)
-// {
-// 	int	i;
-// 	unsigned char	c; //1 unsign char is 8 bits to write, sign char has 1 sign bit
-// 	while (*message)
-// 	{
-// 		c = *message;
-// 		// printf("Sending character %c\n", c);
-// 		i = 7;
-// 		while (i >= 0)
-// 		{
-			
-// 			if ((c & (1 << i)) == 0) //1 = 00000001, bitmask isolating the ith bit in c
-// 			send_signal(pid, SIGUSR2);
-// 			else
-// 			send_signal(pid, SIGUSR1);
-// 			i--;
-// 			while (ready_to_receive == 0)
-// 				usleep(100);
-// 			ready_to_receive = 0;
-// 		}
-// 		message++;
-// 	}
-// 	i = 7;
-// 	c = '\0';
-// 	while (i >= 0)
-// 	{
-		
-// 		if ((c & (1 << i)) == 0) //1 = 00000001, bitmask isolating the ith bit in c
-// 		send_signal(pid, SIGUSR2);
-// 		else
-// 		send_signal(pid, SIGUSR1);
-// 		i--;
-// 		while (ready_to_receive == 0)
-// 			usleep(100);
-// 		ready_to_receive = 0;
-// 	}
-// }
-
-static int validate_and_return_PID(char *arg)
-{
-	int	PID;
+	int	pid;
 	int	i;
 
 	// if (ft_strlen(arg) != 6)
@@ -126,39 +62,42 @@ static int validate_and_return_PID(char *arg)
 		}
 		i++;
 	}
-	PID = ft_atoi(arg);
-	if (kill(PID, 0) == -1)
+	pid = ft_atoi(arg);
+	if (kill(pid, 0) == -1)
 	{
 		ft_putstr_fd("Invalid PID or process not exist\n", 1);
 		return (-1);
 	}
-	return (PID);
+	return (pid);
 }
 
-static void action(int signal)
+static void	action(int signal)
 {
-	// static int	ready_to_receive;
-
 	if (signal == SIGUSR1)
 	{
-		// printf("Server received transmited bit %d\n", signal);
-		ready_to_receive = 1;
+		g_ready_to_receive = 1;
 	}
-		// kill(getpid(), SIGUSR1);
 	else if (signal == SIGUSR2)
 	{
 		ft_putstr_fd("Transmission completed, server terminates \n", 1);
-		// ready_to_receive = 0;
 		exit(EXIT_SUCCESS);
 	}
 }
 
+static void	send_char(int pid, unsigned char c)
+{
+	int	i;
 
-/* 
-Potential problem with signal transmission
-1. timing issue / signal loss: 
-	usleep: suspends execution for at least x microsecond --> return 0 on success
-2. server's signal handling logic: 
-3. validation: send to client after each byte is received. how?
-4. check if pid is correct by sending a check to pid: kill return 0 if success else -1
- */
+	i = 7;
+	while (i >= 0)
+	{
+		if ((c & (1 << i)) == 0) //1 = 00000001, bitmask isolating the ith bit in c
+			send_signal(pid, SIGUSR2);
+		else
+			send_signal(pid, SIGUSR1);
+		i--;
+		while (g_ready_to_receive == 0)
+			usleep(100);
+		g_ready_to_receive = 0;
+	}
+}
