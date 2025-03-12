@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 11:39:13 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/12 12:14:11 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/12 15:21:39 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,15 +47,10 @@ static int	validate_and_return_pid(char *arg)
 	int	pid;
 	int	i;
 
-	// if (ft_strlen(arg) != 6)
-	// {
-	// 	ft_putstr_fd("Not a valid PID\n", 1);
-	// 	return (-1);
-	// }
 	i = 0;
 	while (arg[i])
 	{
-		if (ft_isdigit(arg[i]) == -1)
+		if (ft_isdigit(arg[i]) == 0)
 		{
 			ft_putstr_fd("Not a valid PID\n", 1);
 			return (-1);
@@ -91,7 +86,7 @@ static void	send_char(int pid, unsigned char c)
 	i = 7;
 	while (i >= 0)
 	{
-		if ((c & (1 << i)) == 0) //1 = 00000001, bitmask isolating the ith bit in c
+		if ((c & (1 << i)) == 0)
 			send_signal(pid, SIGUSR2);
 		else
 			send_signal(pid, SIGUSR1);

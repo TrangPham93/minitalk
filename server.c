@@ -6,7 +6,7 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/12 12:54:46 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/12 15:22:44 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,18 +14,15 @@
 #include <signal.h>
 
 static void	set_signal_action(void);
-static void	set_signal_action(void);
 static void	signal_handler(int signal, siginfo_t *info, void *context);
-static void	print_msg_and_reset(int i, int j, unsigned char c);
-static char	g_sent_msg[2097152]; //getconf ARG_MAX
-// getconf ARG_MAX command returns the max value of cumulated arguments size 
-// and environment size passed to exec.
+static void	print_msg_and_reset(int *i, int *j);
+static char	g_sent_msg[2097152];
 
 int	main(void)
 {
 	int	pid;
 
-	pid = getpid(); //always successful
+	pid = getpid();
 	ft_putstr_fd("PID : ", 1);
 	ft_putnbr_fd(pid, 1);
 	ft_putstr_fd("\n", 1);
@@ -45,7 +42,7 @@ static void	set_signal_action(void)
 	if (sigaction(SIGUSR1, &act, NULL) == -1
 		|| sigaction(SIGUSR2, &act, NULL) == -1)
 	{
-		ft_putstr_fd("Sigaction failed \n", 1); //sigaction return 0 on success and -1 on error
+		ft_putstr_fd("Sigaction failed \n", 1);
 		exit(EXIT_FAILURE);
 	}
 }
@@ -68,22 +65,21 @@ static void	signal_handler(int signal, siginfo_t *info, void *context)
 	{
 		if (temp_c == '\0')
 		{
-			send_signal(client_id, SIGUSR2); // termination signal
-			print_msg_and_reset(i, j, temp_c);
+			send_signal(client_id, SIGUSR2);
+			print_msg_and_reset(&i, &j);
 			return ;
 		}
 		g_sent_msg[j++] = temp_c;
 		temp_c = 0;
 		i = 0;
 	}
-	send_signal(client_id, SIGUSR1); //acknowledge each received bit
+	send_signal(client_id, SIGUSR1);
 }
 
-static void	print_msg_and_reset(int i, int j, unsigned char c)
+static void	print_msg_and_reset(int *i, int *j)
 {
 	ft_printf("%s\n", g_sent_msg);
 	ft_bzero(g_sent_msg, sizeof(g_sent_msg));
-	i = 0;
-	j = 0;
-	c = 0;
+	*i = 0;
+	*j = 0;
 }
