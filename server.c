@@ -6,13 +6,14 @@
 /*   By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 14:15:12 by trpham            #+#    #+#             */
-/*   Updated: 2025/03/12 12:06:06 by trpham           ###   ########.fr       */
+/*   Updated: 2025/03/12 12:11:53 by trpham           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 #include <signal.h>
 
+static void	set_signal_action(void);
 static void	set_signal_action(void);
 static void	signal_handler(int signal, siginfo_t *info, void *context);
 static char	g_sent_msg[2097152]; //getconf ARG_MAX
