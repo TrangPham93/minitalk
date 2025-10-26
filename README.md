@@ -39,8 +39,8 @@ make
 
 #### 3. Run the project
 
-Open 2 or more terminals
-On the 1st terminal, input as below, server will return a process ID.
+Open 2 or more terminals.
+On the 1st terminal, run the `server` first, server will return a process ID immediately.
 ```bash
 ./server 
 ```
