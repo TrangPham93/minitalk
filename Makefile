@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/03/05 15:19:20 by trpham            #+#    #+#              #
-#    Updated: 2025/03/11 14:06:27 by trpham           ###   ########.fr        #
+#    Updated: 2025/10/26 18:39:44 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -30,24 +30,28 @@ HEADERS = minitalk.h
 all: $(SERVER_NAME) $(CLIENT_NAME)
 
 %.o: %.c $(HEADERS)
-	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ 
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@ 
 
 $(SERVER_NAME): $(SERVER_OBJS) $(LIBFT_NAME)
-	$(CC) $(CFLAGS) $^ -o $@
+	@$(CC) $(CFLAGS) $^ -o $@
+	@echo "Compiled server"
 
 $(CLIENT_NAME): $(CLIENT_OBJS) $(LIBFT_NAME)
-	$(CC) $(CFLAGS) $^ -o $@
+	@$(CC) $(CFLAGS) $^ -o $@
+	@echo "Compiled client"
 
 $(LIBFT_NAME):
 	@make -C $(LIBFT_DIR)
 
 clean:
 	@make clean -C $(LIBFT_DIR)
-	rm -f $(CLIENT_OBJS) $(SERVER_OBJS)
+	@rm -f $(CLIENT_OBJS) $(SERVER_OBJS)
+	@echo "Clean objs"
 
 fclean: clean
 	@make fclean -C $(LIBFT_DIR)
-	rm -f  $(CLIENT_NAME) $(SERVER_NAME)
+	@rm -f  $(CLIENT_NAME) $(SERVER_NAME)
+	@echo "Clean all"
 
 re: fclean all
 

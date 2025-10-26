@@ -6,7 +6,7 @@
 #    By: trpham <trpham@student.hive.fi>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/10/30 15:05:22 by trpham            #+#    #+#              #
-#    Updated: 2025/01/17 13:29:35 by trpham           ###   ########.fr        #
+#    Updated: 2025/10/26 18:39:19 by trpham           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -78,42 +78,31 @@ OBJS_BONUS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS_BONUS))
 
 NAME = libft.a
 
-# A marker file used to indicate whether bonus files were included.
 BONUS_NAME = .bonus
 
-# Creates the necessary directories for the object files
-# compile the source files $< into object files $@
-# If -o is not specified, the default is to put an executable file in a.out
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
 	@mkdir -p $(@D) 
-	$(CC) $(CFLAGS) -I$(SRC_DIR) -c $< -o $@
+	@$(CC) $(CFLAGS) -I$(SRC_DIR) -c $< -o $@
 	
-# Uses the ar command to create the archive ($@) from the object files $^
-# Create the actual library
-# ar maintain archive libraries, which is a collection of files, typically object files.
-#  create a new library, add members to an existing library, delete members from a library,
-#  extract members from a library, and print a table of contents for a library.
-#  -r Replaces or adds file to archive.
-#  -c Suppresses the message that is normally printed when ar creates a new archive file
-#  -s Regenerates the external symbol table regardless of whether the command modifies the archive.
-#  -rcs rcs can be seen to mean replace, create, sort
-# $^ prequisite files, which mean the OBJECT
+
 $(NAME): $(OBJS)
-	ar rcs $(NAME) $^
+	@ar rcs $(NAME) $^
+	@echo "Compiled libft"
 
 all: $(NAME)
 
 bonus: $(OBJ_DIR) $(BONUS_NAME) 
 
 $(BONUS_NAME): $(OBJS) $(OBJS_BONUS)
-	ar rcs $(NAME) $^
-	touch $(BONUS_NAME)
+	@ar rcs $(NAME) $^
+	@touch $(BONUS_NAME)
+	@echo "Compiled libft including bonus"
 
 clean:
-	rm -rf $(OBJ_DIR)
+	@rm -rf $(OBJ_DIR)
 
 fclean: clean
-	rm -f $(NAME) $(BONUS_NAME)
+	@rm -f $(NAME) $(BONUS_NAME)
 
 re: fclean all
 
