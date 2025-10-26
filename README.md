@@ -15,8 +15,8 @@ There are 2 programs:
   - The client converts each character to bits and sends signal one by one.
   - Add null character at the end to indicate end of message. 
 - Signal encoding:
-  - `SIGUSR1` → represents binary 0
-  - `SIGUSR2` → represents binary 1
+  - `SIGUSR1` → represents binary 1
+  - `SIGUSR2` → represents binary 0
 
 ## How To Run:
 
